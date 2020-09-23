@@ -1,11 +1,12 @@
 import React from 'react';
-
 import {withStyle} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/Appbar';
 import Drawer from '@material-ui/core/Drawer';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/core/Menu';
+import { withStyles } from '@material-ui/styles';
+import FreeBoard from './Freeboard';
 
 
 
@@ -18,7 +19,7 @@ const styles = {
     },
 };
 
-export default class Nav extends React.Component{
+class Nav extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -30,6 +31,7 @@ export default class Nav extends React.Component{
         this.freeClick = this.freeClick.bind(this);
         this.repoClick = this.repoClick.bind(this);
         this.content = <div>홈</div>;
+
     }
     
     handleDrawerToggle = () => this.setState({toggle:!this.state.toggle})
@@ -41,7 +43,7 @@ export default class Nav extends React.Component{
     
     freeClick(){
         this.setState({toggle:!this.state.toggle});
-        this.content = <div>자게</div>
+        this.content = <FreeBoard></FreeBoard>
     }
     
     repoClick(){
@@ -65,7 +67,7 @@ export default class Nav extends React.Component{
             <div className={classes.root}>
                 <AppBar position = "static">
                     <IconButton className={classes.menuButton} color = "inherit" onClick={this.handleDrawerToggle}>
-                        <MenuIcon/>
+                        MENU
                     </IconButton>
                 </AppBar>
                 <Drawer open={this.state.toggle}>
@@ -80,3 +82,5 @@ export default class Nav extends React.Component{
         )
     }
 }
+
+export default withStyles(styles)(Nav);
