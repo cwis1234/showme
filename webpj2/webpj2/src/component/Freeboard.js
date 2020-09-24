@@ -1,5 +1,5 @@
 import React from 'react';
-import {withStyle} from '@material-ui/core/styles';
+import { withStyle } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,51 +14,63 @@ import List from './List';
 
 
 const styles = {
-    root:{
+    root: {
         flexGrow: 1,
     },
-    menuButton:{
-        marginRight:'auto',
+    menuButton: {
+        marginRight: 'auto',
     },
 };
 
-class Freeboard extends React.Component{
-    constructor(props){
+class Freeboard extends React.Component {
+    constructor(props) {
         super(props);
         // this.getBoardList = this.getBoardList.bind(this);
         this.state = {
-            board:[],
-            open:false,
-            name:"",
-            title:"",
-            content:"",
-            pw:"",
-            number:"",
-            num:""
+            board: [],
+            open: false,
+            opencon:false,
+            name: "",
+            title: "",
+            content: "",
+            pw: "",
+            number: "",
+            num: 0,
+            skip:0,
         }
     }
-    componentDidMount(){
-        fetch('http://localhost:3002/all/')
-            .then((res)=>{
-                res.json().then((data)=>{
-                    this.setState({board:data});
+    componentDidMount() {
+        fetch('http://116.255.94.41:3002/all/')
+            .then((res) => {
+                res.json().then((data) => {
+                    this.setState({ board: data });
                 })
             });
+        
+        fetch('http://116.255.94.41:3002/getnum/')
+            .then((res) => {
+                res.json().then((data) => {
+                    this.setState({ num: data[0].num + 1 });
+                })
+            });
+
     }
 
     createContent = () => {
-        this.setState({open:true});
+        this.setState({ open: true });
     }
+
     handleClose = () => {
         this.setState({
-            open:false,
-            name:"",
-            title:"",
-            content:"",
-            pw:"",
-            number:""
+            open: false,
+            name: "",
+            title: "",
+            content: "",
+            pw: "",
+            number: ""
         });
     }
+
     ValueChange = (e) => {
         let nextState = {};
         nextState[e.target.name] = e.target.value;
@@ -66,35 +78,28 @@ class Freeboard extends React.Component{
     }
 
     contentSubmit = () => {
-        fetch('http://localhost:3002/write/',{
-            method:'POST',
-            headers:{
-                'Content-type':'application/json',
+        console.log(this.state.num);
+        fetch('http://116.255.94.41:3002/write/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
             },
-            body:JSON.stringify({
-                'name':this.state.name,
-                'title':this.state.title,
-                'content':this.state.content,
-                'pw':this.state.pw,
+            body: JSON.stringify({
+                'name': this.state.name,
+                'title': this.state.title,
+                'content': this.state.content,
+                'pw': this.state.pw,
+                'num': this.state.num,
             })
         })
+
         this.handleClose();
+
+
     }
 
-    render(){
-        let Elem = React.createElement("Boardelem");
-        for(var i=0 ; i<this.state.board.length ; i++)
-        {
-            Elem += "<TableRow>";
-            Elem += "<TableCell>"+ this.state.board[i].num +"</TableCell>";
-            Elem += "<TableCell>"+ this.state.board[i].title +"</TableCell>";
-            Elem += "<TableCell>"+ this.state.board[i].name +"</TableCell>";
-            Elem += "<TableCell>"+ this.state.board[i].hit +"</TableCell>";
-            Elem += "<TableCell>"+ this.state.board[i].createAt +"</TableCell>";
-            Elem += "</TableRow>";
-            Elem += "\n";
-        }
-        return(
+    render() {
+        return (
             <Table>
                 <TableRow>
                     <TableCell>번호</TableCell>
@@ -105,25 +110,25 @@ class Freeboard extends React.Component{
                 </TableRow>
                 <TableBody>
                     {
-                        this.state.board.map(c=>{
-                            return <List num={c.num} title={c.title} name={c.name} hit={c.hit} createAt={c.createAt}/>
+                        this.state.board.map(c => {
+                            return <List num={c.num} title={c.title} name={c.name} hit={c.hit} createAt={c.createAt} />
                         })
                     }
                 </TableBody>
                 <Button variant="outlined" color="primary" size="large" onClick={this.createContent}>글쓰기</Button>
-                <Dialog open = {this.state.open} onClose = {this.handleClose}>
+                <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle>글쓰기</DialogTitle>
                     <DialogContent>
-                        <TextField label="닉네임" type="text" name="name" value={this.state.name} onChange={this.ValueChange}/>
-                        <br/>
-                        <TextField label="비밀번호" type="text" name="pw" value={this.state.pw} onChange={this.ValueChange}/><br/>
-                        <TextField label="제목" type="text" name="title" value={this.state.title} onChange={this.ValueChange}/>
-                        <br/>
-                        <TextField label="내용" type="text" name="content" 
-                        value={this.state.content} onChange={this.ValueChange}
-                        multiline
-                        rows = "10"/>
-                        <br/>
+                        <TextField label="닉네임" type="text" name="name" value={this.state.name} onChange={this.ValueChange} />
+                        <br />
+                        <TextField label="비밀번호" type="text" name="pw" value={this.state.pw} onChange={this.ValueChange} /><br />
+                        <TextField label="제목" type="text" name="title" value={this.state.title} onChange={this.ValueChange} />
+                        <br />
+                        <TextField label="내용" type="text" name="content"
+                            value={this.state.content} onChange={this.ValueChange}
+                            multiline
+                            rows="10" />
+                        <br />
                     </DialogContent>
                     <DialogAction>
                         <Button variant="contained" color="primary" onClick={this.contentSubmit}>등록</Button>
