@@ -29,14 +29,14 @@ class Freeboard extends React.Component {
         this.state = {
             board: [],
             open: false,
-            opencon:false,
+            opencon: false,
             name: "",
             title: "",
             content: "",
             pw: "",
             number: "",
             num: 0,
-            skip:0,
+            skip: 0,
         }
     }
     componentDidMount() {
@@ -46,7 +46,7 @@ class Freeboard extends React.Component {
                     this.setState({ board: data });
                 })
             });
-        
+
         fetch('http://116.255.94.41:3002/getnum/')
             .then((res) => {
                 res.json().then((data) => {
@@ -92,29 +92,35 @@ class Freeboard extends React.Component {
                 'num': this.state.num,
             })
         })
-
-        this.handleClose();
+        .then()
+        {
+            
+            this.handleClose();
+            this.render();
+        }
 
 
     }
 
     render() {
         return (
-            <Table>
-                <TableRow>
-                    <TableCell>번호</TableCell>
-                    <TableCell>제목</TableCell>
-                    <TableCell>글쓴이</TableCell>
-                    <TableCell>조회수</TableCell>
-                    <TableCell>날짜</TableCell>
-                </TableRow>
-                <TableBody>
-                    {
-                        this.state.board.map(c => {
-                            return <List num={c.num} title={c.title} name={c.name} hit={c.hit} createAt={c.createAt} />
-                        })
-                    }
-                </TableBody>
+            <div>
+                <Table>
+                    <TableBody>
+                    <TableRow>
+                        <TableCell>번호</TableCell>
+                        <TableCell>제목</TableCell>
+                        <TableCell>글쓴이</TableCell>
+                        <TableCell>조회수</TableCell>
+                        <TableCell>날짜</TableCell>
+                    </TableRow>
+                        {
+                            this.state.board.map(c => {
+                                return <List num={c.num} title={c.title} name={c.name} hit={c.hit} createAt={c.createAt} />
+                            })
+                        }
+                    </TableBody>
+                </Table>
                 <Button variant="outlined" color="primary" size="large" onClick={this.createContent}>글쓰기</Button>
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle>글쓰기</DialogTitle>
@@ -135,7 +141,7 @@ class Freeboard extends React.Component {
                         <Button variant="outlined" color="primary" onClick={this.handleClose}>닫기</Button>
                     </DialogAction>
                 </Dialog>
-            </Table>
+            </div>
         )
     }
 }

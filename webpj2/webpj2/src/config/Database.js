@@ -43,6 +43,7 @@ app.get('/all/',function(req,res){
     Board.find({}).sort({num:-1}).find(function(err,posts){
         res.json(posts);
     })
+    
     // Board.find({sort:createAt},function(err,docs){
     //     res.json(docs);
     // })
@@ -61,6 +62,18 @@ app.get('/detail/:num',function(req,res){
         if(err) return console.error(err);
         res.json(post)
     })
+
+app.post('/delete/',function(req,res){
+    console.log(req.body.num);
+    
+    Board.deleteOne({num:req.body.num},function(err){
+        if(err) return console.error(err);
+
+    });
+    return;
+})
+
+    
 })
 
 app.post('/write/',function(req,res){
